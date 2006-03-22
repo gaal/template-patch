@@ -8,10 +8,10 @@ use Template;
 
 use base 'Class::Accessor::Ref';
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 BEGIN {
-    my @accs = (qw/ inp outp vars output _ext _tt conf/); 
+    my @accs = (qw/ inp outp vars routput rinput _ext _tt conf/); 
     __PACKAGE__->mk_accessors(@accs);
     __PACKAGE__->mk_refaccessors(@accs);
  }
@@ -50,7 +50,8 @@ sub new_from_file {
 
     die "$0: must supply --patch arg" unless defined $pfile;
 
-    my $self = $class->new( { vars => {}, conf => {} } );
+    my $self = $class->new( { vars => {},
+            conf => {}, routput => do{\my $output_port} } );
 
     open my $fh, "<", $pfile or die "$0: open: $pfile: $!";
     while (<$fh>) {
@@ -95,16 +96,28 @@ sub extract {
             $input,             # actual data to parse
             $self->vars,        # dictionary for extracted data
         );
+    # we need to keep a ref to input around for the case where no extraction
+    # was successful.
+    $self->rinput(\$input);
     #::YY($self->vars);
 }
 
 sub patch {
     my($self) = @_;
+
+    # if the dictionary is empty, extract didn't find anything.
+    # copy over the input, so we don't emit just a broken template.
+    # XXX: copy or ref?
+    if (0 == keys %{ $self->vars }) {
+        $self->routput( $self->rinput );
+        return;
+    }
+
     $self->_tt( Template->new );
-    $self->_tt->process( \$self->outp, $self->vars, $self->_ref_output )
+    $self->_tt->process( \$self->outp, $self->vars, $self->routput )
 }
 
-sub print { print $_[0]->output }
+sub print { print ${ $_[0]->routput } }
 
 sub ::Y  { require YAML::Syck; YAML::Syck::Dump(@_) }
 sub ::YY { require Carp; Carp::confess(::Y(@_)) }

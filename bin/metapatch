@@ -7,7 +7,9 @@ use Getopt::Long;
 
 use Template::Patch;
 
-GetOptions \our %Conf, qw(patch|p=s);
+GetOptions \our %Conf, qw(patch|p=s version);
+
+version(), exit 0 if $Conf{version};
 
 my $p = Template::Patch->new_from_file($Conf{patch});
 
@@ -20,6 +22,10 @@ $p->print;
 exit 0;
 
 sub slurp_in { local $/; <> }
+sub version {
+    (my $me = $0) =~ s,^.*/|\\,,;
+    print "$me ", Template::Patch->VERSION, "\n";
+}
 
 # vim: ts=4 et :
 

@@ -1,5 +1,11 @@
 Revision history for Template-Patch
 
+0.02    2006-03-23
+        * If the IN template fails to match, don't clobber the output with
+          a measly version of the OUT template and nothing else. Instead,
+          passthrough the input cleanly.
+        * `metapatch --version`.
+
 0.01    2006-03-20
         First version, released on an unsuspecting world.
 
