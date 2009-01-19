@@ -8,6 +8,7 @@ my $builder = Module::Build->new(
     dist_author         => 'Gaal Yahas <gaal@forum2.org>',
     dist_version_from   => 'lib/Template/Patch.pm',
     build_requires => {
+        'Class::Accessor::Ref' => 0,
         'Test::More' => 0,
         'Test::Exception' => 0,
     },
