@@ -8,7 +8,7 @@ use Template;
 
 use base 'Class::Accessor::Ref';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 BEGIN {
     my @accs = (qw/ inp outp vars routput rinput _ext _tt conf/); 
@@ -119,8 +119,8 @@ sub patch {
 
 sub print { print ${ $_[0]->routput } }
 
-sub ::Y  { require YAML::Syck; YAML::Syck::Dump(@_) }
-sub ::YY { require Carp; Carp::confess(::Y(@_)) }
+#sub ::Y  { require YAML::Syck; YAML::Syck::Dump(@_) }
+#sub ::YY { require Carp; Carp::confess(::Y(@_)) }
 
 =head1 SEE ALSO
 
