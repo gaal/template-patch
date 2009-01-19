@@ -6,3 +6,4 @@
 ^Build$
 Template-Patch-.*\.tar\.gz
 \.bak$
+\.git
